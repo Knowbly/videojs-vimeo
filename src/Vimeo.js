@@ -230,7 +230,7 @@ class Vimeo extends Tech {
     } else {
       this.setVolume(this._vimeoState.beforeMuteVolume);
     }
-    this.setTimeout( function(){
+    this.setTimeout(function() {
       this.trigger('volumechange');
     }, 50);
   }

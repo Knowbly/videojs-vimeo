@@ -18,6 +18,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var Component = _video2.default.getComponent('Component');
 var Tech = _video2.default.getTech('Tech');
 var cssInjected = false;
 
@@ -110,12 +111,26 @@ var Vimeo = function (_Tech) {
     this._player = new _player2.default(this.el(), vimeoOptions);
     this.initVimeoState();
 
+    this._player.on('loaded', function () {
+      _this2.trigger('loadedmetadata');
+    });
+
     ['play', 'pause', 'ended', 'timeupdate', 'progress', 'seeked'].forEach(function (e) {
       _this2._player.on(e, function (progress) {
         if (_this2._vimeoState.progress.duration !== progress.duration) {
           _this2.trigger('durationchange');
         }
-        _this2._vimeoState.progress = progress;
+        if (e === 'progress') {
+          _this2._vimeoState.progress.buffered = progress.seconds;
+          _this2._vimeoState.progress.duration = progress.duration;
+        } else {
+          _this2._vimeoState.progress.seconds = progress.seconds;
+          _this2._vimeoState.progress.percent = progress.percent;
+          _this2._vimeoState.progress.duration = progress.duration;
+          if (progress.seconds > _this2._vimeoState.progress.buffered) {
+            _this2._vimeoState.progress.buffered = progress.seconds;
+          }
+        }
         _this2.trigger(e);
       });
     });
@@ -147,7 +162,8 @@ var Vimeo = function (_Tech) {
       progress: {
         seconds: 0,
         percent: 0,
-        duration: 0
+        duration: 0,
+        buffered: 0
       }
     };
 
@@ -166,7 +182,8 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.createEl = function createEl() {
-    var div = _video2.default.dom.createEl('div', {
+    var createEl = _video2.default.dom ? _video2.default.dom.createEl : _video2.default.createEl;
+    var div = createEl('div', {
       id: this.options_.techId
     });
 
@@ -224,7 +241,7 @@ var Vimeo = function (_Tech) {
   Vimeo.prototype.buffered = function buffered() {
     var progress = this._vimeoState.progress;
 
-    return _video2.default.createTimeRange(0, progress.percent * progress.duration);
+    return _video2.default.createTimeRange(0, progress.buffered);
   };
 
   Vimeo.prototype.paused = function paused() {
@@ -236,7 +253,7 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.play = function play() {
-    this._player.play();
+    return this._player.play();
   };
 
   Vimeo.prototype.muted = function muted() {
@@ -309,7 +326,7 @@ Vimeo.nativeSourceHandler.canHandleSource = function (source) {
 
 // @note: Copied over from YouTube — not sure this is relevant
 Vimeo.nativeSourceHandler.handleSource = function (source, tech) {
-  tech.src(source.src);
+  tech.setSrc(source.src);
 };
 
 // @note: Copied over from YouTube — not sure this is relevant
@@ -317,7 +334,11 @@ Vimeo.nativeSourceHandler.dispose = function () {};
 
 Vimeo.registerSourceHandler(Vimeo.nativeSourceHandler);
 
-Tech.registerTech('Vimeo', Vimeo);
+if (typeof Tech.registerTech !== 'undefined') {
+  Tech.registerTech('Vimeo', Vimeo);
+} else {
+  Component.registerComponent('Vimeo', Vimeo);
+}
 
 // Include the version number.
 Vimeo.VERSION = '0.0.1';

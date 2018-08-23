@@ -94,26 +94,12 @@ class Vimeo extends Tech {
     this._player = new VimeoPlayer(this.el(), vimeoOptions);
     this.initVimeoState();
 
-    this._player.on('loaded', () => {
-      this.trigger('loadedmetadata');
-    });
-
     ['play', 'pause', 'ended', 'timeupdate', 'progress', 'seeked'].forEach(e => {
       this._player.on(e, (progress) => {
         if (this._vimeoState.progress.duration !== progress.duration) {
           this.trigger('durationchange');
         }
-        if (e === 'progress') {
-          this._vimeoState.progress.buffered = progress.seconds;
-          this._vimeoState.progress.duration = progress.duration;
-        } else {
-          this._vimeoState.progress.seconds = progress.seconds;
-          this._vimeoState.progress.percent = progress.percent;
-          this._vimeoState.progress.duration = progress.duration;
-          if (progress.seconds > this._vimeoState.progress.buffered) {
-            this._vimeoState.progress.buffered = progress.seconds;
-          }
-        }
+        this._vimeoState.progress = progress;
         this.trigger(e);
       });
     });
@@ -141,8 +127,7 @@ class Vimeo extends Tech {
       progress: {
         seconds: 0,
         percent: 0,
-        duration: 0,
-        buffered: 0
+        duration: 0
       }
     };
 
@@ -211,7 +196,7 @@ class Vimeo extends Tech {
   buffered() {
     const progress = this._vimeoState.progress;
 
-    return videojs.createTimeRange(0, progress.buffered);
+    return videojs.createTimeRange(0, progress.percent * progress.duration);
   }
 
   paused() {
@@ -223,7 +208,7 @@ class Vimeo extends Tech {
   }
 
   play() {
-    return this._player.play();
+    this._player.play();
   }
 
   muted() {
@@ -294,7 +279,7 @@ Vimeo.nativeSourceHandler.canHandleSource = function(source) {
 
 // @note: Copied over from YouTube — not sure this is relevant
 Vimeo.nativeSourceHandler.handleSource = function(source, tech) {
-  tech.setSrc(source.src);
+  tech.src(source.src);
 };
 
 // @note: Copied over from YouTube — not sure this is relevant

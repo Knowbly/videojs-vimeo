@@ -111,26 +111,12 @@ var Vimeo = function (_Tech) {
     this._player = new _player2.default(this.el(), vimeoOptions);
     this.initVimeoState();
 
-    this._player.on('loaded', function () {
-      _this2.trigger('loadedmetadata');
-    });
-
     ['play', 'pause', 'ended', 'timeupdate', 'progress', 'seeked'].forEach(function (e) {
       _this2._player.on(e, function (progress) {
         if (_this2._vimeoState.progress.duration !== progress.duration) {
           _this2.trigger('durationchange');
         }
-        if (e === 'progress') {
-          _this2._vimeoState.progress.buffered = progress.seconds;
-          _this2._vimeoState.progress.duration = progress.duration;
-        } else {
-          _this2._vimeoState.progress.seconds = progress.seconds;
-          _this2._vimeoState.progress.percent = progress.percent;
-          _this2._vimeoState.progress.duration = progress.duration;
-          if (progress.seconds > _this2._vimeoState.progress.buffered) {
-            _this2._vimeoState.progress.buffered = progress.seconds;
-          }
-        }
+        _this2._vimeoState.progress = progress;
         _this2.trigger(e);
       });
     });
@@ -162,8 +148,7 @@ var Vimeo = function (_Tech) {
       progress: {
         seconds: 0,
         percent: 0,
-        duration: 0,
-        buffered: 0
+        duration: 0
       }
     };
 
@@ -240,7 +225,7 @@ var Vimeo = function (_Tech) {
   Vimeo.prototype.buffered = function buffered() {
     var progress = this._vimeoState.progress;
 
-    return _video2.default.createTimeRange(0, progress.buffered);
+    return _video2.default.createTimeRange(0, progress.percent * progress.duration);
   };
 
   Vimeo.prototype.paused = function paused() {
@@ -252,7 +237,7 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.play = function play() {
-    return this._player.play();
+    this._player.play();
   };
 
   Vimeo.prototype.muted = function muted() {
@@ -325,7 +310,7 @@ Vimeo.nativeSourceHandler.canHandleSource = function (source) {
 
 // @note: Copied over from YouTube — not sure this is relevant
 Vimeo.nativeSourceHandler.handleSource = function (source, tech) {
-  tech.setSrc(source.src);
+  tech.src(source.src);
 };
 
 // @note: Copied over from YouTube — not sure this is relevant

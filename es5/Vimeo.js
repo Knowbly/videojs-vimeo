@@ -19,7 +19,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Component = _video2.default.getComponent('Component');
-var Tech = _video2.default.getTech('Tech');
+var Tech = _video2.default.getComponent('Tech');
 var cssInjected = false;
 
 // Since the iframe can't be touched using Vimeo's way of embedding,
@@ -182,8 +182,7 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.createEl = function createEl() {
-    var createEl = _video2.default.dom ? _video2.default.dom.createEl : _video2.default.createEl;
-    var div = createEl('div', {
+    var div = _video2.default.createEl('div', {
       id: this.options_.techId
     });
 
@@ -334,11 +333,8 @@ Vimeo.nativeSourceHandler.dispose = function () {};
 
 Vimeo.registerSourceHandler(Vimeo.nativeSourceHandler);
 
-if (typeof Tech.registerTech !== 'undefined') {
-  Tech.registerTech('Vimeo', Vimeo);
-} else {
-  Component.registerComponent('Vimeo', Vimeo);
-}
+Component.registerComponent('Vimeo', Vimeo);
+Tech.registerTech('Vimeo', Vimeo);
 
 // Include the version number.
 Vimeo.VERSION = '0.0.1';

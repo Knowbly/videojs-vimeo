@@ -2,7 +2,7 @@ import videojs from 'video.js';
 import VimeoPlayer from '@vimeo/player';
 
 const Component = videojs.getComponent('Component');
-const Tech = videojs.getTech('Tech');
+const Tech = videojs.getComponent('Tech');
 let cssInjected = false;
 
 // Since the iframe can't be touched using Vimeo's way of embedding,
@@ -153,8 +153,7 @@ class Vimeo extends Tech {
   }
 
   createEl() {
-    const createEl = videojs.dom ? videojs.dom.createEl : videojs.createEl;
-    const div = createEl('div', {
+    const div = videojs.createEl('div', {
       id: this.options_.techId
     });
 
@@ -303,11 +302,8 @@ Vimeo.nativeSourceHandler.dispose = function() { };
 
 Vimeo.registerSourceHandler(Vimeo.nativeSourceHandler);
 
-if (typeof Tech.registerTech !== 'undefined') {
-  Tech.registerTech('Vimeo', Vimeo);
-} else {
-  Component.registerComponent('Vimeo', Vimeo);
-}
+Component.registerComponent('Vimeo', Vimeo);
+Tech.registerTech('Vimeo', Vimeo);
 
 // Include the version number.
 Vimeo.VERSION = '0.0.1';

@@ -115,6 +115,7 @@
   "homepage": "https://github.com/videojs/videojs-vimeo#readme",
   "browserslist": [
     "last 5 version",
-    "safari >= 7"
+    "safari >= 8",
+    "ie 11"
   ]
 }

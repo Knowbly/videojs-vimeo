@@ -32,3 +32,5 @@ node_modules/
 docs/api/
 # es5/
 test/dist/
+parcel-build/
+.cache/

@@ -15,6 +15,7 @@
     "clean": "rimraf dist test/dist es5 && mkdirp dist test/dist es5",
     "lint": "vjsstandard",
     "start": "babel-node scripts/server.js",
+    "start:parcel": "parcel indexParcel.html --out-dir parcel-build",
     "version": "babel-node scripts/version.js",
     "postversion": "babel-node scripts/postversion.js",
     "prepublish": "npm run build"
@@ -66,6 +67,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",
+    "babel-core": "^6.26.3",
     "babel-plugin-transform-object-assign": "^6.8.0",
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
@@ -88,6 +90,7 @@
     "lodash": "^4.11.2",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^1.5.1",
+    "parcel-bundler": "^1.10.1",
     "qunitjs": "^1.21.0",
     "rimraf": "^2.5.1",
     "sinon": "~1.14.0",
@@ -109,5 +112,10 @@
   "bugs": {
     "url": "https://github.com/videojs/videojs-vimeo/issues"
   },
-  "homepage": "https://github.com/videojs/videojs-vimeo#readme"
+  "homepage": "https://github.com/videojs/videojs-vimeo#readme",
+  "browserslist": [
+    "last 5 version",
+    "safari >= 8",
+    "ie 11"
+  ]
 }

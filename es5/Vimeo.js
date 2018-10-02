@@ -155,6 +155,8 @@ var Vimeo = function (_Tech) {
   };
 
   Vimeo.prototype.initVimeoState = function initVimeoState() {
+    var _this3 = this;
+
     var state = this._vimeoState = {
       ended: false,
       playing: false,
@@ -164,20 +166,37 @@ var Vimeo = function (_Tech) {
         percent: 0,
         duration: 0,
         buffered: 0
-      }
+      },
+      playbackRate: 1
     };
 
     this._player.getCurrentTime().then(function (time) {
       return state.progress.seconds = time;
     });
     this._player.getDuration().then(function (time) {
-      return state.progress.duration = time;
+      state.progress.duration = time;
+      _this3.trigger('durationchange');
     });
     this._player.getPaused().then(function (paused) {
       return state.playing = !paused;
     });
     this._player.getVolume().then(function (volume) {
       return state.volume = volume;
+    });
+    this._player.getPlaybackRate().then(function (playbackRate) {
+      return state.playbackRate = playbackRate;
+    });
+  };
+
+  Vimeo.prototype.playbackRate = function playbackRate() {
+    return this._vimeoState.playbackRate;
+  };
+
+  Vimeo.prototype.setPlaybackRate = function setPlaybackRate(val) {
+    var _this4 = this;
+
+    this._player.setPlaybackRate(val).then(function (playbackRate) {
+      return _this4._vimeoState.playbackRate = playbackRate;
     });
   };
 

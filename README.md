@@ -10,6 +10,11 @@ point your package manage at this repo.
 
 ## Usage
 
+```
+# run development server
+$ npm run start:parcel
+```
+
 See [index.html](https://github.com/videojs/videojs-vimeo/blob/master/index.html)
 
 [videojs]: http://videojs.com/

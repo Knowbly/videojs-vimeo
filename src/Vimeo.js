@@ -143,13 +143,26 @@ class Vimeo extends Tech {
         percent: 0,
         duration: 0,
         buffered: 0
-      }
+      },
+      playbackRate: 1
     };
 
     this._player.getCurrentTime().then(time => state.progress.seconds = time);
-    this._player.getDuration().then(time => state.progress.duration = time);
+    this._player.getDuration().then(time => {
+      state.progress.duration = time;
+      this.trigger('durationchange');
+    });
     this._player.getPaused().then(paused => state.playing = !paused);
     this._player.getVolume().then(volume => state.volume = volume);
+    this._player.getPlaybackRate().then(playbackRate => state.playbackRate = playbackRate);
+  }
+
+  playbackRate() {
+    return this._vimeoState.playbackRate;
+  }
+
+  setPlaybackRate(val) {
+    this._player.setPlaybackRate(val).then(playbackRate => this._vimeoState.playbackRate = playbackRate);
   }
 
   createEl() {

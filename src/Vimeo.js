@@ -222,6 +222,15 @@ class Vimeo extends Tech {
     return this._vimeoState.progress.duration;
   }
 
+  seekable() {
+    if (!this._player) {
+      return videojs.createTimeRange();
+    }
+    const progress = this._vimeoState.progress;
+
+    return videojs.createTimeRange(0, progress.duration);
+  }
+
   buffered() {
     const progress = this._vimeoState.progress;
 

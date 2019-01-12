@@ -257,6 +257,15 @@ var Vimeo = function (_Tech) {
     return this._vimeoState.progress.duration;
   };
 
+  Vimeo.prototype.seekable = function seekable() {
+    if (!this._player) {
+      return _video2.default.createTimeRange();
+    }
+    var progress = this._vimeoState.progress;
+
+    return _video2.default.createTimeRange(0, progress.duration);
+  };
+
   Vimeo.prototype.buffered = function buffered() {
     var progress = this._vimeoState.progress;
 

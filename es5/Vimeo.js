@@ -212,6 +212,14 @@ var Vimeo = function (_Tech) {
     return div;
   };
 
+  Vimeo.prototype.dispose = function dispose() {
+    if (this._player) {
+      this._player.destroy();
+    }
+    this._player = null;
+    Tech.prototype.dispose.call(this);
+  };
+
   Vimeo.prototype.controls = function controls() {
     return false;
   };

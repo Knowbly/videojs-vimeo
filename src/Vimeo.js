@@ -177,6 +177,14 @@ class Vimeo extends Tech {
     return div;
   }
 
+  dispose() {
+    if (this._player) {
+      this._player.destroy();
+    }
+    this._player = null;
+    Tech.prototype.dispose.call(this);
+  }
+
   controls() {
     return false;
   }
